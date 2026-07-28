@@ -1,6 +1,9 @@
 "use client";
 
 import { FormEvent, useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import { Bot, Paperclip, Plus, Send, Sparkles, User } from "lucide-react";
 import { Message } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -11,22 +14,43 @@ interface ChatWindowProps {
   conversationId: string | null;
   messages: Message[];
   onSend: (content: string) => Promise<void>;
+  onNewConversation: () => void;
   sending: boolean;
   error: string | null;
 }
 
-export function ChatWindow({ conversationId, messages, onSend, sending, error }: ChatWindowProps) {
+export function ChatWindow({
+  conversationId,
+  messages,
+  onSend,
+  onNewConversation,
+  sending,
+  error,
+}: ChatWindowProps) {
   const [draft, setDraft] = useState("");
   const bottomRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [messages]);
+  }, [messages, sending]);
+
+  useEffect(() => {
+    const el = textareaRef.current;
+    if (!el) return;
+    el.style.height = "auto";
+    el.style.height = `${Math.min(el.scrollHeight, 200)}px`;
+  }, [draft]);
 
   if (!conversationId) {
     return (
-      <div className="flex flex-1 items-center justify-center p-8 text-center text-muted-foreground">
-        Select a conversation or start a new one to begin chatting.
+      <div className="flex flex-1 flex-col items-center justify-center gap-3 p-8 text-center">
+        <div className="flex size-12 items-center justify-center rounded-full bg-primary/10 text-primary">
+          <Sparkles className="size-6" />
+        </div>
+        <p className="max-w-xs text-sm text-muted-foreground">
+          Select a conversation or start a new one to begin chatting with your AI assistant.
+        </p>
       </div>
     );
   }
@@ -42,48 +66,108 @@ export function ChatWindow({ conversationId, messages, onSend, sending, error }:
   return (
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
       <ScrollArea className="min-h-0 flex-1">
-        <div className="flex flex-col gap-3 p-6">
+        <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
           {messages.map((m) => (
-            <div
-              key={m.id}
-              className={cn(
-                "max-w-[70%] whitespace-pre-wrap break-words rounded-2xl px-4 py-2 text-sm leading-relaxed",
-                m.role === "user"
-                  ? "self-end bg-primary text-primary-foreground"
-                  : "self-start bg-muted"
-              )}
-            >
-              {m.content}
+            <div key={m.id} className="flex items-start gap-3">
+              <div
+                className={cn(
+                  "flex size-8 shrink-0 items-center justify-center rounded-full",
+                  m.role === "user"
+                    ? "bg-secondary text-secondary-foreground"
+                    : "bg-primary text-primary-foreground"
+                )}
+              >
+                {m.role === "user" ? <User className="size-4" /> : <Bot className="size-4" />}
+              </div>
+              <div className="min-w-0 flex-1 pt-1">
+                <p className="mb-1 text-xs font-medium text-muted-foreground">
+                  {m.role === "user" ? "You" : "Assistant"}
+                </p>
+                <div className="prose prose-sm max-w-none text-sm leading-relaxed text-foreground prose-p:my-1.5 prose-pre:bg-muted prose-pre:text-foreground prose-code:text-foreground prose-headings:text-foreground prose-strong:text-foreground prose-a:text-primary">
+                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+                </div>
+              </div>
             </div>
           ))}
+
           {sending && (
-            <div className="max-w-[70%] self-start rounded-2xl bg-muted px-4 py-2 text-sm text-muted-foreground">
-              Thinking...
+            <div className="flex items-start gap-3">
+              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                <Bot className="size-4" />
+              </div>
+              <div className="pt-2">
+                <span className="inline-flex gap-1">
+                  <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:-0.3s]" />
+                  <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:-0.15s]" />
+                  <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground" />
+                </span>
+              </div>
             </div>
           )}
-          {error && <p className="self-start text-sm text-destructive">{error}</p>}
+
+          {error && (
+            <p className="rounded-lg bg-destructive/10 px-3 py-2 text-sm text-destructive">{error}</p>
+          )}
+
           <div ref={bottomRef} />
         </div>
       </ScrollArea>
 
-      <form className="flex gap-2 border-t p-4" onSubmit={handleSubmit}>
-        <Textarea
-          className="min-h-0 flex-1 resize-none"
-          rows={1}
-          placeholder="Type a message..."
-          value={draft}
-          onChange={(e) => setDraft(e.target.value)}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              e.preventDefault();
-              handleSubmit(e);
-            }
-          }}
-        />
-        <Button type="submit" disabled={sending || !draft.trim()}>
-          Send
-        </Button>
-      </form>
+      <div className="border-t p-4">
+        <form
+          className="mx-auto flex w-full max-w-3xl items-end gap-1 rounded-2xl border bg-card p-2 shadow-sm"
+          onSubmit={handleSubmit}
+        >
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label="Start a new conversation"
+            title="Start a new conversation"
+            className="mb-0.5 rounded-full text-muted-foreground"
+            onClick={onNewConversation}
+          >
+            <Plus className="size-4" />
+          </Button>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            aria-label="Attach a file"
+            title="File attachments coming soon"
+            disabled
+            className="mb-0.5 rounded-full text-muted-foreground"
+          >
+            <Paperclip className="size-4" />
+          </Button>
+          <Textarea
+            ref={textareaRef}
+            className="max-h-[200px] min-h-9 flex-1 resize-none border-none bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent"
+            rows={1}
+            placeholder="Message your AI assistant..."
+            value={draft}
+            onChange={(e) => setDraft(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter" && !e.shiftKey) {
+                e.preventDefault();
+                handleSubmit(e);
+              }
+            }}
+          />
+          <Button
+            type="submit"
+            size="icon"
+            aria-label="Send message"
+            className="mb-0.5 rounded-full"
+            disabled={sending || !draft.trim()}
+          >
+            <Send className="size-4" />
+          </Button>
+        </form>
+        <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-muted-foreground">
+          Press Enter to send, Shift+Enter for a new line.
+        </p>
+      </div>
     </div>
   );
 }

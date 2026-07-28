@@ -101,6 +101,7 @@ export default function ChatPage() {
         conversationId={activeId}
         messages={messages}
         onSend={sendMessage}
+        onNewConversation={createConversation}
         sending={sending}
         error={error}
       />

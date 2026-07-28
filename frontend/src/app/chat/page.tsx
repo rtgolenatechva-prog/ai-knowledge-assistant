@@ -55,6 +55,18 @@ export default function ChatPage() {
     }
   }
 
+  async function renameConversation(id: string, title: string) {
+    if (!token) return;
+    const updated = await api.updateConversation(token, id, { title });
+    setConversations((prev) => prev.map((c) => (c.id === id ? updated : c)));
+  }
+
+  async function togglePinConversation(id: string, pinned: boolean) {
+    if (!token) return;
+    await api.updateConversation(token, id, { pinned });
+    await loadConversations();
+  }
+
   async function deleteConversation(id: string) {
     if (!token) return;
     await api.deleteConversation(token, id);
@@ -95,6 +107,8 @@ export default function ChatPage() {
         onSelect={selectConversation}
         onCreate={createConversation}
         onDelete={deleteConversation}
+        onRename={renameConversation}
+        onTogglePin={togglePinConversation}
         creating={creating}
       />
       <ChatWindow

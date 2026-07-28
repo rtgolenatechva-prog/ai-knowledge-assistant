@@ -98,34 +98,34 @@ export function ChatWindow({
 
       <div className="p-4">
         <form
-          className="mx-auto flex w-full max-w-2xl items-center gap-0.5 rounded-full border bg-card py-1 pl-1.5 pr-1.5 shadow-sm"
+          className="mx-auto flex w-full max-w-2xl items-center gap-0.5 rounded-full border bg-card py-0.5 pl-1 pr-1 shadow-sm"
           onSubmit={handleSubmit}
         >
           <Button
             type="button"
             variant="ghost"
-            size="icon-sm"
+            size="icon-xs"
             aria-label="Start a new conversation"
             title="Start a new conversation"
             className="rounded-full text-muted-foreground"
             onClick={onNewConversation}
           >
-            <Plus className="size-4" />
+            <Plus className="size-3.5" />
           </Button>
           <Button
             type="button"
             variant="ghost"
-            size="icon-sm"
+            size="icon-xs"
             aria-label="Attach a file"
             title="File attachments coming soon"
             disabled
             className="rounded-full text-muted-foreground"
           >
-            <Paperclip className="size-4" />
+            <Paperclip className="size-3.5" />
           </Button>
           <Textarea
             ref={textareaRef}
-            className="max-h-[160px] min-h-7 flex-1 resize-none border-none bg-transparent py-1 text-sm shadow-none focus-visible:ring-0 dark:bg-transparent"
+            className="max-h-[160px] min-h-6 flex-1 resize-none border-none bg-transparent py-0.5 text-xs leading-6 shadow-none focus-visible:ring-0 dark:bg-transparent"
             rows={1}
             placeholder="Ask anything"
             value={draft}
@@ -144,7 +144,7 @@ export function ChatWindow({
             className="rounded-full"
             disabled={sending || !draft.trim()}
           >
-            <Send className="size-4" />
+            <Send className="size-3.5" />
           </Button>
         </form>
         <p className="mx-auto mt-2 max-w-2xl text-center text-xs text-muted-foreground">

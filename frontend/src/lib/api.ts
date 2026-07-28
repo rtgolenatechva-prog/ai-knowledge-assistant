@@ -43,6 +43,7 @@ export interface AuthResponse {
 export interface Conversation {
   id: string;
   title: string;
+  pinned: boolean;
   createdAt: string;
 }
 
@@ -82,6 +83,17 @@ export const api = {
 
   getConversation: (token: string, id: string) =>
     request<ConversationDetail>(`/conversations/${id}`, { token }),
+
+  updateConversation: (
+    token: string,
+    id: string,
+    data: { title?: string; pinned?: boolean }
+  ) =>
+    request<Conversation>(`/conversations/${id}`, {
+      method: "PATCH",
+      token,
+      body: JSON.stringify(data),
+    }),
 
   deleteConversation: (token: string, id: string) =>
     request<void>(`/conversations/${id}`, { method: "DELETE", token }),

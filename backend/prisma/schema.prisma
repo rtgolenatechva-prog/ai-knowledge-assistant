@@ -20,6 +20,7 @@ model Conversation {
   userId    String
   user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   title     String
+  pinned    Boolean   @default(false)
   createdAt DateTime  @default(now())
   messages  Message[]
 }

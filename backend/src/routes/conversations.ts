@@ -11,7 +11,7 @@ router.get("/", async (req: AuthedRequest, res, next) => {
   try {
     const conversations = await prisma.conversation.findMany({
       where: { userId: req.userId },
-      orderBy: { createdAt: "desc" },
+      orderBy: [{ pinned: "desc" }, { createdAt: "desc" }],
     });
     res.json(conversations);
   } catch (err) {
@@ -44,6 +44,34 @@ router.get("/:id", async (req: AuthedRequest, res, next) => {
       return res.status(404).json({ error: "conversation not found" });
     }
     res.json(conversation);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.patch("/:id", async (req: AuthedRequest, res, next) => {
+  try {
+    const { title, pinned } = req.body as { title?: string; pinned?: boolean };
+
+    const conversation = await prisma.conversation.findFirst({
+      where: { id: req.params.id, userId: req.userId },
+    });
+    if (!conversation) {
+      return res.status(404).json({ error: "conversation not found" });
+    }
+
+    if (title !== undefined && !title.trim()) {
+      return res.status(400).json({ error: "title cannot be empty" });
+    }
+
+    const updated = await prisma.conversation.update({
+      where: { id: conversation.id },
+      data: {
+        ...(title !== undefined ? { title: title.trim() } : {}),
+        ...(pinned !== undefined ? { pinned } : {}),
+      },
+    });
+    res.json(updated);
   } catch (err) {
     next(err);
   }

@@ -9,7 +9,6 @@ import {
   Plus,
   Settings,
   Sparkles,
-  Trash2,
   LogOut,
 } from "lucide-react";
 import { Conversation } from "@/lib/api";
@@ -18,19 +17,8 @@ import { groupConversationsByDate } from "@/lib/group-by-date";
 import { SettingsDialog } from "@/components/SettingsDialog";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-  AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
+import { ConversationRow } from "@/components/ConversationRow";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -46,6 +34,8 @@ interface SidebarProps {
   onSelect: (id: string) => void;
   onCreate: () => void;
   onDelete: (id: string) => void;
+  onRename: (id: string, title: string) => void;
+  onTogglePin: (id: string, pinned: boolean) => void;
   creating: boolean;
 }
 
@@ -55,6 +45,8 @@ export function Sidebar({
   onSelect,
   onCreate,
   onDelete,
+  onRename,
+  onTogglePin,
   creating,
 }: SidebarProps) {
   const { user, logout } = useAuth();
@@ -139,61 +131,31 @@ export function Sidebar({
               {!collapsed && (
                 <p className="px-2 pt-1 text-[11px] font-medium text-muted-foreground">{group.label}</p>
               )}
-              {group.items.map((c) => (
-                <div
-                  key={c.id}
-                  className={cn(
-                    "group flex items-center gap-2 rounded-lg px-2 py-1.5 text-xs hover:bg-sidebar-accent",
-                    c.id === activeId && "bg-sidebar-accent text-sidebar-accent-foreground"
-                  )}
-                >
-                  {collapsed && (
-                    <button onClick={() => onSelect(c.id)} aria-label={c.title}>
-                      <MessageSquare className="size-4 shrink-0 text-muted-foreground" />
-                    </button>
-                  )}
-                  {!collapsed && (
-                    <>
-                      <button
-                        className="min-w-0 flex-1 truncate text-left"
-                        onClick={() => onSelect(c.id)}
-                      >
-                        {c.title}
-                      </button>
-                      <AlertDialog>
-                        <AlertDialogTrigger
-                          render={
-                            <button
-                              className="shrink-0 text-muted-foreground opacity-0 transition-opacity hover:text-destructive group-hover:opacity-100"
-                              aria-label={`Delete ${c.title}`}
-                            >
-                              <Trash2 className="size-3.5" />
-                            </button>
-                          }
-                        />
-                        <AlertDialogContent>
-                          <AlertDialogHeader>
-                            <AlertDialogTitle>Delete this conversation?</AlertDialogTitle>
-                            <AlertDialogDescription>
-                              &ldquo;{c.title}&rdquo; and all its messages will be permanently
-                              deleted. This can&apos;t be undone.
-                            </AlertDialogDescription>
-                          </AlertDialogHeader>
-                          <AlertDialogFooter className="border-t-0 bg-transparent">
-                            <AlertDialogCancel>Cancel</AlertDialogCancel>
-                            <AlertDialogAction
-                              className="bg-destructive text-white hover:bg-destructive/90"
-                              onClick={() => onDelete(c.id)}
-                            >
-                              Delete
-                            </AlertDialogAction>
-                          </AlertDialogFooter>
-                        </AlertDialogContent>
-                      </AlertDialog>
-                    </>
-                  )}
-                </div>
-              ))}
+              {group.items.map((c) =>
+                collapsed ? (
+                  <button
+                    key={c.id}
+                    onClick={() => onSelect(c.id)}
+                    aria-label={c.title}
+                    className={cn(
+                      "flex items-center justify-center rounded-lg p-2 hover:bg-sidebar-accent",
+                      c.id === activeId && "bg-sidebar-accent text-sidebar-accent-foreground"
+                    )}
+                  >
+                    <MessageSquare className="size-4 shrink-0 text-muted-foreground" />
+                  </button>
+                ) : (
+                  <ConversationRow
+                    key={c.id}
+                    conversation={c}
+                    active={c.id === activeId}
+                    onSelect={onSelect}
+                    onRename={onRename}
+                    onTogglePin={onTogglePin}
+                    onDelete={onDelete}
+                  />
+                )
+              )}
             </div>
           ))}
           {conversations.length === 0 && !collapsed && (
@@ -201,8 +163,6 @@ export function Sidebar({
           )}
         </div>
       </ScrollArea>
-
-      <Separator />
 
       <DropdownMenu>
         <DropdownMenuTrigger

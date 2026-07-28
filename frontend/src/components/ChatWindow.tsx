@@ -3,7 +3,7 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Paperclip, Plus, Send, Sparkles } from "lucide-react";
+import { Plus, Send, Sparkles } from "lucide-react";
 import { Message } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
@@ -74,7 +74,10 @@ export function ChatWindow({
                 </div>
               </div>
             ) : (
-              <div key={m.id} className="prose prose-sm max-w-none text-sm leading-relaxed text-foreground prose-p:my-1.5 prose-pre:bg-muted prose-pre:text-foreground prose-code:text-foreground prose-headings:text-foreground prose-strong:text-foreground prose-a:text-primary">
+              <div
+                key={m.id}
+                className="prose prose-sm dark:prose-invert max-w-none text-sm leading-relaxed text-foreground prose-p:my-1.5 prose-headings:text-foreground prose-strong:text-foreground prose-a:text-primary prose-blockquote:text-foreground prose-blockquote:border-l-primary/40 prose-li:text-foreground prose-ol:text-foreground prose-ul:text-foreground prose-table:text-foreground prose-th:text-foreground prose-td:text-foreground prose-pre:bg-muted prose-pre:text-foreground prose-code:text-foreground"
+              >
                 <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
               </div>
             )
@@ -111,17 +114,6 @@ export function ChatWindow({
             onClick={onNewConversation}
           >
             <Plus className="size-3.5" />
-          </Button>
-          <Button
-            type="button"
-            variant="ghost"
-            size="icon-xs"
-            aria-label="Attach a file"
-            title="File attachments coming soon"
-            disabled
-            className="rounded-full text-muted-foreground"
-          >
-            <Paperclip className="size-3.5" />
           </Button>
           <Textarea
             ref={textareaRef}

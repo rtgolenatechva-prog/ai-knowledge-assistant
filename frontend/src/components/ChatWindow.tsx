@@ -147,7 +147,7 @@ export function ChatWindow({
             <Send className="size-3.5" />
           </Button>
         </form>
-        <p className="mx-auto mt-2 max-w-2xl text-center text-xs text-muted-foreground">
+        <p className="mx-auto mt-1.5 max-w-2xl text-center text-[10px] leading-tight text-muted-foreground">
           Press Enter to send, Shift+Enter for a new line.
         </p>
       </div>

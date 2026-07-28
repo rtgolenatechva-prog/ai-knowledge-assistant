@@ -125,9 +125,9 @@ export function ChatWindow({
           </Button>
           <Textarea
             ref={textareaRef}
-            className="max-h-[160px] min-h-7 flex-1 resize-none border-none bg-transparent py-1 shadow-none focus-visible:ring-0 dark:bg-transparent"
+            className="max-h-[160px] min-h-7 flex-1 resize-none border-none bg-transparent py-1 text-sm shadow-none focus-visible:ring-0 dark:bg-transparent"
             rows={1}
-            placeholder="Message your AI assistant..."
+            placeholder="Ask anything"
             value={draft}
             onChange={(e) => setDraft(e.target.value)}
             onKeyDown={(e) => {

@@ -96,18 +96,18 @@ export function ChatWindow({
         </div>
       </ScrollArea>
 
-      <div className="border-t p-4">
+      <div className="p-4">
         <form
-          className="mx-auto flex w-full max-w-3xl items-end gap-1 rounded-full border bg-card p-2 shadow-sm"
+          className="mx-auto flex w-full max-w-2xl items-center gap-0.5 rounded-full border bg-card py-1 pl-1.5 pr-1.5 shadow-sm"
           onSubmit={handleSubmit}
         >
           <Button
             type="button"
             variant="ghost"
-            size="icon"
+            size="icon-sm"
             aria-label="Start a new conversation"
             title="Start a new conversation"
-            className="mb-0.5 rounded-full text-muted-foreground"
+            className="rounded-full text-muted-foreground"
             onClick={onNewConversation}
           >
             <Plus className="size-4" />
@@ -115,17 +115,17 @@ export function ChatWindow({
           <Button
             type="button"
             variant="ghost"
-            size="icon"
+            size="icon-sm"
             aria-label="Attach a file"
             title="File attachments coming soon"
             disabled
-            className="mb-0.5 rounded-full text-muted-foreground"
+            className="rounded-full text-muted-foreground"
           >
             <Paperclip className="size-4" />
           </Button>
           <Textarea
             ref={textareaRef}
-            className="max-h-[200px] min-h-9 flex-1 resize-none border-none bg-transparent shadow-none focus-visible:ring-0 dark:bg-transparent"
+            className="max-h-[160px] min-h-7 flex-1 resize-none border-none bg-transparent py-1 shadow-none focus-visible:ring-0 dark:bg-transparent"
             rows={1}
             placeholder="Message your AI assistant..."
             value={draft}
@@ -139,15 +139,15 @@ export function ChatWindow({
           />
           <Button
             type="submit"
-            size="icon"
+            size="icon-sm"
             aria-label="Send message"
-            className="mb-0.5 rounded-full"
+            className="rounded-full"
             disabled={sending || !draft.trim()}
           >
             <Send className="size-4" />
           </Button>
         </form>
-        <p className="mx-auto mt-2 max-w-3xl text-center text-xs text-muted-foreground">
+        <p className="mx-auto mt-2 max-w-2xl text-center text-xs text-muted-foreground">
           Press Enter to send, Shift+Enter for a new line.
         </p>
       </div>

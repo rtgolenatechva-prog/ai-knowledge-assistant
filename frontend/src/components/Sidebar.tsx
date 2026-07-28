@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
+import { useMediaQuery } from "@/lib/use-media-query";
 import {
   MessageSquare,
   PanelLeftClose,
@@ -59,13 +60,51 @@ export function Sidebar({
   const { user, logout } = useAuth();
   const [collapsed, setCollapsed] = useState(false);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [width, setWidth] = useState(288);
+  const [resizing, setResizing] = useState(false);
+  const asideRef = useRef<HTMLElement>(null);
+  const isDesktop = useMediaQuery("(min-width: 768px)");
   const groups = groupConversationsByDate(conversations);
+
+  const startResize = useCallback((e: React.PointerEvent) => {
+    e.preventDefault();
+    const startX = e.clientX;
+    const startWidth = asideRef.current?.getBoundingClientRect().width ?? 288;
+    setResizing(true);
+
+    function onMove(ev: PointerEvent) {
+      const next = Math.min(420, Math.max(220, startWidth + (ev.clientX - startX)));
+      setWidth(next);
+    }
+    function onUp() {
+      setResizing(false);
+      window.removeEventListener("pointermove", onMove);
+      window.removeEventListener("pointerup", onUp);
+    }
+    window.addEventListener("pointermove", onMove);
+    window.addEventListener("pointerup", onUp);
+  }, []);
+
+  useEffect(() => {
+    if (!resizing) return;
+    const prevCursor = document.body.style.cursor;
+    const prevSelect = document.body.style.userSelect;
+    document.body.style.cursor = "col-resize";
+    document.body.style.userSelect = "none";
+    return () => {
+      document.body.style.cursor = prevCursor;
+      document.body.style.userSelect = prevSelect;
+    };
+  }, [resizing]);
 
   return (
     <aside
+      ref={asideRef}
+      style={isDesktop && !collapsed ? { width } : undefined}
       className={cn(
-        "flex h-[40vh] w-full min-h-0 flex-col gap-3 border-b bg-sidebar p-3 text-sidebar-foreground transition-[width] duration-150 md:h-full md:border-b-0 md:border-r",
-        collapsed ? "md:w-16" : "md:w-72"
+        "relative flex h-[40vh] w-full min-h-0 flex-col gap-3 border-b bg-sidebar p-3 text-sidebar-foreground md:h-full md:border-b-0 md:border-r",
+        !resizing && "transition-[width] duration-150",
+        collapsed && "md:w-16"
       )}
     >
       <div className="flex items-center gap-2 px-1 py-1">
@@ -198,6 +237,18 @@ export function Sidebar({
       </DropdownMenu>
 
       <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
+
+      {!collapsed && (
+        <div
+          onPointerDown={startResize}
+          role="separator"
+          aria-orientation="vertical"
+          aria-label="Resize sidebar"
+          className="absolute inset-y-0 -right-1 hidden w-2 cursor-col-resize touch-none md:block"
+        >
+          <div className="mx-auto h-full w-px bg-transparent hover:bg-primary/40" />
+        </div>
+      )}
     </aside>
   );
 }

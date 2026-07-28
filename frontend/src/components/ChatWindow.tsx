@@ -125,7 +125,7 @@ export function ChatWindow({
           </Button>
           <Textarea
             ref={textareaRef}
-            className="max-h-[160px] min-h-6 flex-1 resize-none border-none bg-transparent py-0.5 text-xs leading-6 shadow-none focus-visible:ring-0 dark:bg-transparent"
+            className="max-h-[160px] min-h-5 flex-1 resize-none border-none bg-transparent py-0 text-xs leading-5 shadow-none focus-visible:ring-0 dark:bg-transparent"
             rows={1}
             placeholder="Ask anything"
             value={draft}

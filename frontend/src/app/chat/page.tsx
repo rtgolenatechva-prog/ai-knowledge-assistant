@@ -6,7 +6,6 @@ import { useAuth } from "@/lib/auth-context";
 import { api, ApiError, Conversation, Message } from "@/lib/api";
 import { Sidebar } from "@/components/Sidebar";
 import { ChatWindow } from "@/components/ChatWindow";
-import styles from "./page.module.css";
 
 export default function ChatPage() {
   const router = useRouter();
@@ -89,7 +88,7 @@ export default function ChatPage() {
   }
 
   return (
-    <div className={styles.layout}>
+    <div className="flex h-screen min-h-0 w-full flex-col md:flex-row">
       <Sidebar
         conversations={conversations}
         activeId={activeId}

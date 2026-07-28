@@ -3,6 +3,7 @@
 import { MessageSquare, Plus, Sparkles, Trash2, LogOut } from "lucide-react";
 import { Conversation } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Separator } from "@/components/ui/separator";
@@ -34,7 +35,8 @@ export function Sidebar({
         <div className="flex size-7 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground">
           <Sparkles className="size-4" />
         </div>
-        <span className="text-sm font-semibold">Knowledge Assistant</span>
+        <span className="flex-1 text-sm font-semibold">Knowledge Assistant</span>
+        <ThemeToggle className="size-8" />
       </div>
 
       <Button onClick={onCreate} disabled={creating} className="w-full shrink-0 justify-start gap-2">

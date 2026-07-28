@@ -6,6 +6,7 @@ import Link from "next/link";
 import { api, ApiError } from "@/lib/api";
 import { useAuth } from "@/lib/auth-context";
 import { Sparkles } from "lucide-react";
+import { ThemeToggle } from "@/components/ThemeToggle";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -42,7 +43,8 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center gap-6 p-6">
+    <div className="relative flex min-h-screen flex-col items-center justify-center gap-6 p-6">
+      <ThemeToggle className="absolute right-4 top-4" />
       <div className="flex items-center gap-2">
         <div className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
           <Sparkles className="size-5" />
@@ -78,7 +80,7 @@ export default function LoginPage() {
             </div>
             {error && <p className="text-sm text-destructive">{error}</p>}
           </CardContent>
-          <CardFooter className="flex flex-col gap-4">
+          <CardFooter className="flex flex-col gap-4 border-t-0 bg-transparent">
             <Button type="submit" className="w-full" disabled={submitting}>
               {submitting ? "Logging in..." : "Log in"}
             </Button>

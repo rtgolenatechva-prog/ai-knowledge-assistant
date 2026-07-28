@@ -2,8 +2,11 @@
 
 A full-stack web app where users register, log in, and chat with an AI assistant. Conversations are saved, listable, resumable, and deletable.
 
-**Live demo:** _TBD after deployment_
-**Repo:** _TBD_
+**Live demo:** https://frontend-ochre-kappa-54.vercel.app
+**Backend API:** https://ai-knowledge-assistant-backend-aeoc.onrender.com
+**Repo:** https://github.com/rtgolenatechva-prog/ai-knowledge-assistant
+
+> Note: the backend is on Render's free tier and spins down after inactivity — the first request after idling can take up to ~50 seconds to respond while it wakes up.
 
 ## Tech Stack
 

@@ -46,9 +46,7 @@ export default function RegisterPage() {
     <div className="relative flex min-h-screen flex-col items-center justify-center gap-6 p-6">
       <ThemeToggle className="absolute right-4 top-4" />
       <div className="flex items-center gap-2">
-        <div className="flex size-9 items-center justify-center rounded-xl bg-primary text-primary-foreground">
-          <Sparkles className="size-5" />
-        </div>
+        <Sparkles className="size-6 text-foreground" />
         <span className="text-lg font-semibold">Knowledge Assistant</span>
       </div>
       <Card className="w-full max-w-sm">

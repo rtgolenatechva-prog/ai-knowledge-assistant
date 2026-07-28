@@ -3,12 +3,11 @@
 import { FormEvent, useEffect, useRef, useState } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { Bot, Paperclip, Plus, Send, Sparkles, User } from "lucide-react";
+import { Paperclip, Plus, Send, Sparkles } from "lucide-react";
 import { Message } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { cn } from "@/lib/utils";
 
 interface ChatWindowProps {
   conversationId: string | null;
@@ -67,42 +66,26 @@ export function ChatWindow({
     <div className="flex min-h-0 min-w-0 flex-1 flex-col">
       <ScrollArea className="min-h-0 flex-1">
         <div className="mx-auto flex w-full max-w-3xl flex-col gap-6 p-6">
-          {messages.map((m) => (
-            <div key={m.id} className="flex items-start gap-3">
-              <div
-                className={cn(
-                  "flex size-8 shrink-0 items-center justify-center rounded-full",
-                  m.role === "user"
-                    ? "bg-secondary text-secondary-foreground"
-                    : "bg-primary text-primary-foreground"
-                )}
-              >
-                {m.role === "user" ? <User className="size-4" /> : <Bot className="size-4" />}
-              </div>
-              <div className="min-w-0 flex-1 pt-1">
-                <p className="mb-1 text-xs font-medium text-muted-foreground">
-                  {m.role === "user" ? "You" : "Assistant"}
-                </p>
-                <div className="prose prose-sm max-w-none text-sm leading-relaxed text-foreground prose-p:my-1.5 prose-pre:bg-muted prose-pre:text-foreground prose-code:text-foreground prose-headings:text-foreground prose-strong:text-foreground prose-a:text-primary">
-                  <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+          {messages.map((m) =>
+            m.role === "user" ? (
+              <div key={m.id} className="flex justify-end">
+                <div className="max-w-[75%] rounded-3xl bg-secondary px-4 py-2.5 text-sm leading-relaxed text-secondary-foreground">
+                  {m.content}
                 </div>
               </div>
-            </div>
-          ))}
+            ) : (
+              <div key={m.id} className="prose prose-sm max-w-none text-sm leading-relaxed text-foreground prose-p:my-1.5 prose-pre:bg-muted prose-pre:text-foreground prose-code:text-foreground prose-headings:text-foreground prose-strong:text-foreground prose-a:text-primary">
+                <ReactMarkdown remarkPlugins={[remarkGfm]}>{m.content}</ReactMarkdown>
+              </div>
+            )
+          )}
 
           {sending && (
-            <div className="flex items-start gap-3">
-              <div className="flex size-8 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                <Bot className="size-4" />
-              </div>
-              <div className="pt-2">
-                <span className="inline-flex gap-1">
-                  <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:-0.3s]" />
-                  <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:-0.15s]" />
-                  <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground" />
-                </span>
-              </div>
-            </div>
+            <span className="inline-flex gap-1">
+              <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:-0.3s]" />
+              <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground [animation-delay:-0.15s]" />
+              <span className="size-1.5 animate-bounce rounded-full bg-muted-foreground" />
+            </span>
           )}
 
           {error && (
@@ -115,7 +98,7 @@ export function ChatWindow({
 
       <div className="border-t p-4">
         <form
-          className="mx-auto flex w-full max-w-3xl items-end gap-1 rounded-2xl border bg-card p-2 shadow-sm"
+          className="mx-auto flex w-full max-w-3xl items-end gap-1 rounded-full border bg-card p-2 shadow-sm"
           onSubmit={handleSubmit}
         >
           <Button

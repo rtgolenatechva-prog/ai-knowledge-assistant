@@ -98,7 +98,7 @@ export function ChatWindow({
 
       <div className="p-4">
         <form
-          className="mx-auto flex w-full max-w-2xl items-center gap-0.5 rounded-full border bg-card py-0.5 pl-1 pr-1 shadow-sm"
+          className="mx-auto flex w-full max-w-2xl items-center gap-1 rounded-full border bg-card py-1 pl-1.5 pr-1.5 shadow-sm"
           onSubmit={handleSubmit}
         >
           <Button
@@ -125,7 +125,7 @@ export function ChatWindow({
           </Button>
           <Textarea
             ref={textareaRef}
-            className="max-h-[160px] min-h-5 flex-1 resize-none border-none bg-transparent py-0 text-xs leading-5 shadow-none focus-visible:ring-0 dark:bg-transparent"
+            className="max-h-[160px] min-h-5 flex-1 resize-none border-none bg-transparent py-0.5 text-xs md:text-xs leading-5 shadow-none focus-visible:ring-0 dark:bg-transparent"
             rows={1}
             placeholder="Ask anything"
             value={draft}
